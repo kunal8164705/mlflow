@@ -19,11 +19,14 @@ import Utils from '../../common/utils/Utils';
 import ParallelCoordinatesPlotPanel from './ParallelCoordinatesPlotPanel';
 import { PageHeader } from '../../shared/building_blocks/PageHeader';
 import { CollapsibleSection } from '../../common/components/CollapsibleSection';
+import ArtifactPage from './ArtifactPage';
 import {
   shouldDisableLegacyRunCompareCharts,
   shouldUseNextRunsComparisonUI,
 } from '../../common/utils/FeatureUtils';
 import { useExperimentPageFeedbackUrl } from './experiment-page/hooks/useExperimentPageFeedbackUrl';
+import ReactDiffViewer from 'react-diff-viewer';
+import 'react-tabs/style/react-tabs.css';
 
 const { TabPane } = Tabs;
 
@@ -101,6 +104,7 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
       onlyShowParamDiff: false,
       onlyShowTagDiff: false,
       onlyShowMetricDiff: false,
+      onlyShowPrompt:false
     };
     this.onResizeHandler = this.onResizeHandler.bind(this);
     this.onCompareRunTableScrollHandler = this.onCompareRunTableScrollHandler.bind(this);
@@ -451,6 +455,10 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
       defaultMessage: 'Tags',
       description: 'Row group title for tags of runs on the experiment compare runs page',
     });
+    const artifactLabel =this.props.intl.formatMessage({
+      defaultMessage: 'Artifacts',
+      description: 'Artifacts',
+    });
     const diffOnlyLabel = this.props.intl.formatMessage({
       defaultMessage: 'Show diff only',
       description:
@@ -459,7 +467,7 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
     });
 
     const displayChartSection = !shouldDisableLegacyRunCompareCharts();
-
+    
     return (
       <div className='CompareRunView' ref={this.compareRunViewRef}>
         <PageHeader title={title} breadcrumbs={breadcrumbs} />
@@ -521,13 +529,14 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
                     description='Tab pane title for contour plots on the compare runs page'
                   />
                 }
+                
                 key='contour-plot'
               >
                 <CompareRunContour
                   runUuids={this.props.runUuids}
                   runDisplayNames={this.props.runDisplayNames}
                 />
-              </TabPane>
+              </TabPane>              
             </Tabs>
           </CollapsibleSection>
         )}
@@ -644,6 +653,33 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
           <Spacer size='lg' />
           {this.renderTagTable(colWidth)}
         </CollapsibleSection>
+        <CollapsibleSection title={artifactLabel}>
+          <Switch
+            label={diffOnlyLabel}
+            aria-label={[paramsLabel, diffOnlyLabel].join(' - ')}
+            // @ts-expect-error TS(4111): Property 'onlyShowParamDiff' comes from an index s... Remove this comment to see the full error message
+            checked={this.state.onlyShowPrompt}
+            onChange={(checked, e) => this.setState({ onlyShowPrompt: checked })}
+          />
+          <Spacer size='lg' />
+          <div className="container">
+          <div className="component">    
+          <ArtifactPage runUuid={this.props.runUuids[0]}  runTags={this.props.tagLists[0]} />
+          </div>
+          <div className="component"> 
+          <Tabs>
+          {this.props.runUuids.slice(1).map((runUUid,index)=>
+            <TabPane 
+              tab={`${runNames[0]} vs ${runNames[index+1]}`}
+              key={`${runNames[0]} vs ${runNames[index+1]}`}
+              > 
+            <ArtifactPage runUuid={runUUid}  runTags={this.props.tagLists[index]} />
+            </TabPane> 
+            )}
+  </Tabs>
+  </div>
+  </div>
+        </CollapsibleSection>                                                                                                                                                                                                                                                                                                                                                                                               
       </div>
     );
   }

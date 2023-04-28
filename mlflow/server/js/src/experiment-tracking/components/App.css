@@ -194,3 +194,12 @@ pre {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.component {
+  width: 48%;
+  margin: auto;
+}
