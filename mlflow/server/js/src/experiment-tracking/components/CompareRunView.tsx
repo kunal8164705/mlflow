@@ -112,7 +112,7 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
     this.runDetailsTableRef = React.createRef();
     this.compareRunViewRef = React.createRef();
   }
-
+  
   onResizeHandler(e: any) {
     const table = this.runDetailsTableRef.current;
     if (table !== null) {
@@ -467,7 +467,7 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
     });
 
     const displayChartSection = !shouldDisableLegacyRunCompareCharts();
-    
+     
     return (
       <div className='CompareRunView' ref={this.compareRunViewRef}>
         <PageHeader title={title} breadcrumbs={breadcrumbs} />
@@ -664,16 +664,19 @@ export class CompareRunView extends Component<CompareRunViewProps, CompareRunVie
           <Spacer size='lg' />
           <div className="container">
           <div className="component">    
-          <ArtifactPage runUuid={this.props.runUuids[0]}  runTags={this.props.tagLists[0]} />
+          <ArtifactPage runUuid={this.props.runInfos[0].run_uuid}  runTags={this.props.tagLists[0]} />
           </div>
           <div className="component"> 
           <Tabs>
-          {this.props.runUuids.slice(1).map((runUUid,index)=>
+          {this.props.runInfos.slice(1).map((runInfo,index)=>
             <TabPane 
               tab={`${runNames[0]} vs ${runNames[index+1]}`}
               key={`${runNames[0]} vs ${runNames[index+1]}`}
               > 
-            <ArtifactPage runUuid={runUUid}  runTags={this.props.tagLists[index]} />
+             {/* <FileTree path={runInfo.artifact_uri}/> */}
+             {/* <DirectoryTree rootDirectory={runInfo.artifact_uri} /> */}
+             {/* <ArtifactView {...this.props} handleActiveNodeChange={this.handleActiveNodeChange} /> */}
+            < ArtifactPage runUuid={runInfo.run_uuid}  runTags={this.props.tagLists[index]} />
             </TabPane> 
             )}
   </Tabs>

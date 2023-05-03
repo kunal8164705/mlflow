@@ -5,6 +5,8 @@ import { coy as style } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { getLanguage } from '../../../common/utils/FileUtils';
 import { getArtifactContent } from '../../../common/utils/ArtifactUtils';
 import './ShowArtifactTextView.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 type OwnProps = {
   runUuid: string;
@@ -57,19 +59,25 @@ class ShowArtifactTextView extends Component<Props, State> {
       const overrideStyles = {
         fontFamily: 'Source Code Pro,Menlo,monospace',
         fontSize: '13px',
-        overflow: 'auto',
-        marginTop: '0',
+        overflow: 'auto',   
+        whiteSpace: "pre-wrap",   
+        marginTop: '0',        
         width: '100%',
         height: '100%',
-        padding: '5px',
+        padding: '5px',               
       };
-      const renderedContent = ShowArtifactTextView.prettifyText(language, this.state.text);
+      const renderedContent = ShowArtifactTextView.prettifyText(language, this.state.text);  
+      const modules = {
+        toolbar: false // hide the toolbar
+      };
+          
       return (
         <div className='ShowArtifactPage'>
           <div className='text-area-border-box'>
-            <SyntaxHighlighter language={language} style={style} customStyle={overrideStyles}>
-              {renderedContent}
-            </SyntaxHighlighter>
+            {/* <SyntaxHighlighter  language={language} style={overrideStyles} customStyle={overrideStyles}> */}
+            <ReactQuill  value={renderedContent} readOnly={true} modules={modules}/>
+              
+            {/* </SyntaxHighlighter> */}
           </div>
         </div>
       );
