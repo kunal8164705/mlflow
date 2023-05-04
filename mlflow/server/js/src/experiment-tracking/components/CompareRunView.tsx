@@ -25,7 +25,6 @@ import {
   shouldUseNextRunsComparisonUI,
 } from '../../common/utils/FeatureUtils';
 import { useExperimentPageFeedbackUrl } from './experiment-page/hooks/useExperimentPageFeedbackUrl';
-import ReactDiffViewer from 'react-diff-viewer';
 import 'react-tabs/style/react-tabs.css';
 
 const { TabPane } = Tabs;
